@@ -2,9 +2,10 @@ import datetime
 from flask import Flask, render_template, redirect, url_for
 from data import db_session
 from data.users import User
+from data.sites import Sites
 from forms.register import RegisterForm
 from forms.login import LoginForm
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, login_required, logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -22,7 +23,7 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def main():
     url = url_for('static', filename='css/style.css')
     return render_template("main_window.html", url=url)
@@ -47,13 +48,13 @@ def register():
         db_sess.add(user)
         db_sess.commit()
         return redirect('/')
-    url = url_for('static', filename='css/style.css')
+    url = url_for('static', filename='css/style_for_forms.css')
     return render_template('register.html', form=form, url=url, title="Регистрация")
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    url = url_for('static', filename='css/style.css')
+    url = url_for('static', filename='css/style_for_forms.css')
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -65,6 +66,13 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form, url=url)
     return render_template('login.html', title='Авторизация', form=form, url=url)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 if __name__ == '__main__':

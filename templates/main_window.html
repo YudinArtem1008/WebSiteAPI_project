@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+    {% if current_user.is_authenticated %}
+        <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+    {% else %}
+        <p>
+            <a class="btn btn-primary test" href="/register">Зарегистрироваться</a>
+            <a class="btn btn-success test2" href="/login">Войти</a>
+        </p>
+    <br>
+    <br>
+    {% endif %}
     <form>
         <input type="text" placeholder="Искать здесь...">
         <button type="submit"></button>

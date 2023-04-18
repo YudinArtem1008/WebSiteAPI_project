@@ -35,3 +35,15 @@ button:before {
   font-size: 16px;
   color: #FFFFFF;
 }
+h1 {
+    margin-left: 40%;
+}
+.navbar-brand {
+    margin-left: 75%;
+}
+.test {
+    margin-left: 900px;
+}
+.test2 {
+    margin-left: 100px;
+}
