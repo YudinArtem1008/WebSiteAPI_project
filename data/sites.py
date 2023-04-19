@@ -1,8 +1,9 @@
 import sqlalchemy
 from .db_session import SqlAlchemyBase
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Sites(SqlAlchemyBase):
+class Sites(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'sites'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

@@ -1,11 +1,14 @@
 import datetime
 from flask import Flask, render_template, redirect, url_for
-from data import db_session
-from data.users import User
-from data.sites import Sites
-from forms.register import RegisterForm
-from forms.login import LoginForm
 from flask_login import LoginManager, login_user, login_required, logout_user
+from data import db_session
+from data import sites_api
+from data.sites import Sites
+from data.users import User
+from data.sites_api import get_sites
+from forms.login import LoginForm
+from forms.register import RegisterForm
+from forms.search import SearchingForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -26,7 +29,13 @@ def load_user(user_id):
 @app.route('/', methods=['GET'])
 def main():
     url = url_for('static', filename='css/style.css')
-    return render_template("main_window.html", url=url)
+    form = SearchingForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        res = db_sess.query(Sites).filter((Sites.hypertext.contains(form.searching_label.data)) |
+                                          (Sites.about.contains(form.searching_label.data)))
+        return get_sites(res)
+    return render_template("main_window.html", url=url, form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -77,4 +86,5 @@ def logout():
 
 if __name__ == '__main__':
     db_session.global_init("db/browser.db")
+    app.register_blueprint(sites_api.blueprint)
     app.run(port=5000, host='127.0.0.1')

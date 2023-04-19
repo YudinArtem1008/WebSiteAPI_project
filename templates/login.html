@@ -22,15 +22,6 @@
                 </div>
             {% endfor %}
         </p>
-        <p>
-            {{ form.test.label }}<br>
-            {{ form.test(class="form-control", type="search") }}<br>
-            {% for error in form.test.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         <div>{{ message }}</div>

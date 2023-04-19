@@ -11,8 +11,18 @@
     <br>
     <br>
     {% endif %}
-    <form>
-        <input type="text" placeholder="Искать здесь...">
-        <button type="submit"></button>
+    <form action="" method="get">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.searching_label.label }}<br>
+            {{ form.searching_label(class="form-control", type="text") }}<br>
+            {% for error in form.searching_label.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{ message }}
     </form>
 {% endblock %}

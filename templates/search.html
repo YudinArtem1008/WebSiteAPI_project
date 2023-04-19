@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        {% for data in sites %}
+            <a href="{{data.url}}" name="{{data.hypertext}}"></a>
+            <p>{{data.about}}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
