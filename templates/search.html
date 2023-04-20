@@ -1,10 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div>
-        {% for data in sites %}
-            <a href="{{data.url}}" name="{{data.hypertext}}"></a>
-            <p>{{data.about}}</p>
-        {% endfor %}
-    </div>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+        <p>
+            {{ form.searching_label.label }}<br>
+            {{ form.searching_label(class="form-control", type="text") }}<br>
+            {% for error in form.searching_label.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{ message }}
+    </form>
+    {% for data in sites %}
+        <div class="square-block">
+            <a class="site" href="{{data.url}}" name="{{data.hypertext}}" target="_blank">
+                {{data.hypertext}}
+                <br>
+            </a>
+            <span>{{data.about}}</span>
+            <br>
+        </div>
+        <br>
+    {% endfor %}
 {% endblock %}

@@ -11,3 +11,6 @@ class Sites(SqlAlchemyBase, SerializerMixin):
     url = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     hypertext = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     about = sqlalchemy.Column(sqlalchemy.Text, nullable=False)
+
+    def __repr__(self):
+        return f'[{self.url},{self.hypertext},{self.about}]'
