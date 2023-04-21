@@ -32,6 +32,8 @@ def main():
         db_sess = db_session.create_session()
         res = db_sess.query(Sites).filter((Sites.hypertext.contains(form.searching_label.data)) |
                                           (Sites.about.contains(form.searching_label.data))).all()
+        if form.speech_moving.data:
+            return redirect('/speak')
         return render_template('search.html', sites=res, url=url, form=form)
     return render_template("main_window.html", url=url, form=form)
 
@@ -82,6 +84,16 @@ def logout():
     return redirect("/")
 
 
+@app.route('/speak', methods=['GET', 'POST'])
+@login_required
+def speak():
+    url = url_for('static', filename='css/style.css')
+    form = SearchingForm()
+    if form.validate_on_submit():
+        return redirect('/')
+    return render_template("speech_search.html", form=form, url=url)
+
+
 if __name__ == '__main__':
     db_session.global_init("db/browser.db")
-    app.run(port=5000, host='127.0.0.1', debug=True)
+    app.run(port=5000, host='127.0.0.1')

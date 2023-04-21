@@ -23,6 +23,7 @@
                 </p>
             {% endfor %}
         </p>
+        <p>{{ form.speech_moving() }} {{ form.speech_moving.label }}</p>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         {{ message }}
     </form>
