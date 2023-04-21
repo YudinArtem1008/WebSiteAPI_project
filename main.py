@@ -90,8 +90,16 @@ def speak():
     url = url_for('static', filename='css/style.css')
     form = SearchingForm()
     if form.validate_on_submit():
-        return redirect('/')
+        return redirect('/speak/search')
     return render_template("speech_search.html", form=form, url=url)
+
+
+@app.route('/speak/search', methods=['GET', 'POST'])
+@login_required
+def speak_search():
+    url = url_for('static', filename='css/style.css')
+    text = 'Говорите'
+    return render_template("speech_analyzer.html", url=url, text=text)
 
 
 if __name__ == '__main__':
