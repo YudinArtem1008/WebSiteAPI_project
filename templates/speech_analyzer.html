@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{text}}</h1>
-    <img src="/static/img/microphone.png" alt="micro">
+    {% set text = "Говорите" %}
+    <h1>{{text}} <img src="/static/img/microphone.png" alt="micro" width="40" height="40"></h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{ message }}
+    </form>
+    <h1>{{query}}</h1>
 {% endblock %}

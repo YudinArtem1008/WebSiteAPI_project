@@ -1,6 +1,7 @@
 import datetime
 from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user
+from audio_working.audio import recognize
 from data import db_session
 from data.sites import Sites
 from data.users import User
@@ -98,8 +99,18 @@ def speak():
 @login_required
 def speak_search():
     url = url_for('static', filename='css/style.css')
-    text = 'Говорите'
-    return render_template("speech_analyzer.html", url=url, text=text)
+    form = SearchingForm()
+    if form.validate_on_submit():
+        return redirect('/')
+    query = list(recognize())
+    a = []
+    for letter in query:
+        if not letter.isalpha():
+            a.append(' ')
+        else:
+            a.append(letter)
+    a = ''.join(a).capitalize()
+    return render_template("speech_analyzer.html", query=a, url=url, form=form)
 
 
 if __name__ == '__main__':
