@@ -84,16 +84,6 @@ def logout():
     return redirect("/")
 
 
-@app.route('/speak', methods=['GET', 'POST'])
-@login_required
-def speak():
-    url = url_for('static', filename='css/style.css')
-    form = SearchingForm()
-    if form.validate_on_submit():
-        return redirect('/speak/search')
-    return render_template("speech_search.html", form=form, url=url)
-
-
 if __name__ == '__main__':
     db_session.global_init("db/browser.db")
     api.add_resource(sites_resources.SitesListResource, '/api/sites/<data>')
