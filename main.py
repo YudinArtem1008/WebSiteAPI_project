@@ -4,11 +4,11 @@ from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user
 from flask_restful import Api
 from data import db_session, sites_resources
-from data.sites import Sites
 from data.users import User
 from forms.login import LoginForm
 from forms.register import RegisterForm
 from forms.search import SearchingForm
+from forms.adding_site_form import AddingSiteForm
 
 app = Flask(__name__)
 api = Api(app)
@@ -32,6 +32,8 @@ def main():
     url = url_for('static', filename='css/style.css')
     form = SearchingForm()
     if form.validate_on_submit():
+        if form.searching_label.data == '':
+            return render_template("main_window.html", url=url, form=form)
         data = requests.get(f"http://127.0.0.1:5000/api/sites/{form.searching_label.data}").json()
         res = data['sites']
         return render_template('search.html', sites=res, url=url, form=form)
@@ -82,6 +84,24 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route('/add_site', methods=['GET', 'POST'])
+@login_required
+def add_site():
+    form = AddingSiteForm()
+    url = url_for('static', filename='css/style_for_forms.css')
+    if form.validate_on_submit():
+        try:
+            success = requests.post("http://127.0.0.1:5000/api/sites/test", json={'url': form.url.data,
+                                                                                  'hypertext': form.hypertext.data,
+                                                                                  'about': form.about.data}).json()
+            if success['success'] == 'OK':
+                return redirect('/')
+        except Exception:
+            message = "Не удалось добавить ваш сайт. Повторите попытку позже"
+            return render_template("adding_site.html", form=form, message=message, url=url)
+    return render_template("adding_site.html", form=form, url=url)
 
 
 if __name__ == '__main__':

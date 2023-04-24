@@ -9,7 +9,7 @@ def abort_if_sites_not_found(sites_id):
     session = db_session.create_session()
     sites = session.query(Sites).get(sites_id)
     if not sites:
-        abort(404, message=f"News {sites_id} not found")
+        abort(404, message=f"Site {sites_id} not found")
 
 
 class SiteResource(Resource):
@@ -37,7 +37,7 @@ class SitesListResource(Resource):
         return jsonify({'sites': [item.to_dict(
             only=('url', 'hypertext', 'about')) for item in sites]})
 
-    def post(self):
+    def post(self, data=None):
         args = parser.parse_args()
         session = db_session.create_session()
         news = Sites(
