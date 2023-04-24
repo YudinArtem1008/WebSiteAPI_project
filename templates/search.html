@@ -13,17 +13,16 @@
                 </p>
             {% endfor %}
         </p>
-        <p>{{ form.speech_moving() }} {{ form.speech_moving.label }}</p>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         {{ message }}
     </form>
     {% for data in sites %}
         <div class="square-block">
-            <a class="site" href="{{data.url}}" name="{{data.hypertext}}" target="_blank">
-                {{data.hypertext}}
+            <a class="site" href="{{data['url']}}" name="{{data['hypertext']}}" target="_blank">
+                {{data["hypertext"]}}
                 <br>
             </a>
-            <span>{{data.about}}</span>
+            <span>{{data["about"]}}</span>
             <br>
         </div>
         <br>

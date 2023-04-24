@@ -1,8 +1,9 @@
 import datetime
+import requests
 from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user
-from audio_working.audio import recognize
-from data import db_session
+from flask_restful import Api
+from data import db_session, sites_resources
 from data.sites import Sites
 from data.users import User
 from forms.login import LoginForm
@@ -10,6 +11,7 @@ from forms.register import RegisterForm
 from forms.search import SearchingForm
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(
     days=365
@@ -30,11 +32,8 @@ def main():
     url = url_for('static', filename='css/style.css')
     form = SearchingForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        res = db_sess.query(Sites).filter((Sites.hypertext.contains(form.searching_label.data)) |
-                                          (Sites.about.contains(form.searching_label.data))).all()
-        if form.speech_moving.data:
-            return redirect('/speak')
+        data = requests.get(f"http://127.0.0.1:5000/api/sites/{form.searching_label.data}").json()
+        res = data['sites']
         return render_template('search.html', sites=res, url=url, form=form)
     return render_template("main_window.html", url=url, form=form)
 
@@ -95,24 +94,8 @@ def speak():
     return render_template("speech_search.html", form=form, url=url)
 
 
-@app.route('/speak/search', methods=['GET', 'POST'])
-@login_required
-def speak_search():
-    url = url_for('static', filename='css/style.css')
-    form = SearchingForm()
-    if form.validate_on_submit():
-        return redirect('/')
-    query = list(recognize())
-    a = []
-    for letter in query:
-        if not letter.isalpha():
-            a.append(' ')
-        else:
-            a.append(letter)
-    a = ''.join(a).capitalize()
-    return render_template("speech_analyzer.html", query=a, url=url, form=form)
-
-
 if __name__ == '__main__':
     db_session.global_init("db/browser.db")
+    api.add_resource(sites_resources.SitesListResource, '/api/sites/<data>')
+    api.add_resource(sites_resources.SiteResource, '/api/sites/<int:sites_id>')
     app.run(port=5000, host='127.0.0.1')
