@@ -3,7 +3,11 @@
 	margin: auto;
 }
 form {
-  position: relative;
-  width: 600px;
-  margin: 0 auto;
+    position: relative;
+    width: 600px;
+    margin: 0 auto;
+}
+h1 {
+    position: relative;
+    margin: 0 auto;
 }
